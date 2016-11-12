@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WalkaChomika
+namespace WalkaChomika.Models
 {
-    class Animal
+    public class Animal
     {
         /// <summary>
         /// Poziom życia.
