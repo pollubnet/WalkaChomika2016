@@ -17,5 +17,10 @@ namespace Ktos.Aisle.Engine.Areas
         public IList<Location> Locations { get; set; }
 
         public Point3 StartingPoint { get; set; }
+
+        public Location GetLocation(Point3 point)
+        {
+            return Locations.Where(x => x.Coordinates == point).FirstOrDefault();
+        }
     }
 }

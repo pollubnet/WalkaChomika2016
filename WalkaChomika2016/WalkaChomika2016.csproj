@@ -7,7 +7,7 @@
     <ProjectGuid>{C37323F8-71BE-4D07-98D9-B0E7F1CF4752}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WalkaChomika2016</RootNamespace>
+    <RootNamespace>WalkaChomika</RootNamespace>
     <AssemblyName>WalkaChomika2016</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
@@ -94,6 +94,7 @@
   <ItemGroup>
     <Compile Include="Assets\HamsterVillage.cs" />
     <Compile Include="Engine\Area.cs" />
+    <Compile Include="Engine\Extensions.cs" />
     <Compile Include="Engine\Location.cs" />
     <Compile Include="Engine\Neswdu.cs" />
     <Compile Include="Engine\Point3.cs" />
