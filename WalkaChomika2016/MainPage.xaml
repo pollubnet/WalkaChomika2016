@@ -8,6 +8,12 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.ChildrenTransitions>
+            <TransitionCollection>
+                <ContentThemeTransition/>
+            </TransitionCollection>
+        </Grid.ChildrenTransitions>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="80*"/>
             <RowDefinition Height="50*"/>
@@ -39,7 +45,7 @@
             <ScrollViewer Grid.Row="2">
                 <TextBlock FontSize="18" x:Name="txtLocationDescription" TextWrapping="Wrap" />
             </ScrollViewer>
-            <ListBox x:Name="lbLocationEnemies" Grid.Row="3" Foreground="Red" />
+            <ListBox x:Name="lbLocationEnemies" Grid.Row="3" Foreground="Red" SelectionChanged="lbLocationEnemies_SelectionChanged" />
         </Grid>
 
         <Grid Grid.Row="0" Grid.Column="1">

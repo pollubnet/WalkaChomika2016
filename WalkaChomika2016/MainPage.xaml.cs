@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Ktos.Aisle.Engine.Areas;
+using WalkaChomika.Models;
 using WalkaChomika2016.Engine;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -26,6 +27,7 @@ namespace WalkaChomika
     {
         private Area currentArea;
         private Location currentLocation;
+        private Animal player;
 
         public MainPage()
         {
@@ -35,7 +37,17 @@ namespace WalkaChomika
             currentLocation = currentArea.GetLocation(currentArea.StartingPoint);
             txtLog.AddToBeginning($"Przybyłeś do {currentArea.Name}");
 
+            player = new Animal { Name = "Staszek", HP = 10, Damage = 1, Mana = 0 };
+            UpdatePlayer();
+
             UpdateLocation();
+        }
+
+        private void UpdatePlayer()
+        {
+            meName.Text = player.Name;
+            meDamage.Text = $"Dmg: 0-{player.Damage}";
+            meHP.Text = $"HP: {player.HP}";
         }
 
         private void UpdateLocation()
@@ -78,6 +90,14 @@ namespace WalkaChomika
         private void GoSouth(object sender, RoutedEventArgs e)
         {
             Go(Neswdu.South);
+        }
+
+        private void lbLocationEnemies_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (lbLocationEnemies.SelectedItem != null)
+            {
+                Frame.Navigate(typeof(FightPage), new Animal[] { player, currentLocation.Enemies.First() });
+            }
         }
     }
 }

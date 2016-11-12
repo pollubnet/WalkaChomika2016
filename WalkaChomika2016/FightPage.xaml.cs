@@ -1,17 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using WalkaChomika.Models;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -19,30 +9,40 @@ using Windows.UI.Xaml.Navigation;
 namespace WalkaChomika
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// An empty page that can be used on its own or navigated to
+    /// within a Frame.
     /// </summary>
     public sealed partial class FightPage : Page
     {
-        private Animal Frog;
-        private Animal Hamster;
+        private Animal enemy;
+        private Animal player;
 
         public FightPage()
         {
-            this.InitializeComponent();
+            this.InitializeComponent();            
+        }
 
-            //Tworzymy obiekt Zwierzęcia i przypisujemy referencję do zmiennej Frog, nadajemy mu imię, HP, Damage oraz Mane
-            Frog = new Animal();
-            Frog.Name = "Basia";
-            Frog.HP = 50;
-            Frog.Damage = 20;
-            Frog.Mana = 0;
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            var f = (Animal[])e.Parameter;
+            player = f[0];
+            enemy = f[1];
 
-            //Tworzymy obiekt Zwierzęcia i przypisujemy referencję do zmiennej Hamster, nadajemy mu imię, HP, Damage oraz Mane
-            Hamster = new Animal();
-            Hamster.Name = "Janusz";
-            Hamster.HP = 70;
-            Hamster.Damage = 10;
-            Hamster.Mana = 0;
+            UpdatePlayer();
+            UpdateEnemy();
+        }
+
+        private void UpdatePlayer()
+        {
+            meName.Text = player.Name;
+            meDamage.Text = $"Dmg: 0-{player.Damage}";
+            meHP.Text = $"HP: {player.HP}";
+        }
+
+        private void UpdateEnemy()
+        {
+            enemyName.Text = enemy.Name;
+            enemyHP.Text = $"HP: {enemy.HP}";
         }
 
         /// <summary>
@@ -64,51 +64,53 @@ namespace WalkaChomika
 
             if (whoAttack < 5)
             {
-                // Gdy została wylosowana liczba mniejsza od 5 to nasz obiekt Żaby będzie atakował Chomika
-                Frog.Attack(Hamster);
-                // Do kontrolki textBlocka przypisujemy tekst zmiennej dodając w {0} i {1} imiona zwierząt.
+                // Gdy została wylosowana liczba mniejsza od 5 to nasz
+                // obiekt Żaby będzie atakował Chomika
+                enemy.Attack(player);
+                // Do kontrolki textBlocka przypisujemy tekst zmiennej
+                // dodając w {0} i {1} imiona zwierząt.
 
-                
-
-                txtStatus.Text = string.Format(fightStatus, Frog.Name, Hamster.Name);
+                txtStatus.Text = string.Format(fightStatus, enemy.Name, player.Name);
                 // Sprawdzamy czy chomik nadal żyje po ataku.
-                if (!Hamster.IsAlive())
+                if (!player.IsAlive())
                 {
                     // Dodajemy tekst że chomik nie żyje
                     txtStatus.Text += "\nChomik nie żyje!";
                     // Wyłączamy przyciskowi "Wlacz" możliwość klikania.
                     btnBite.IsEnabled = false;
-                    // robimy return, czyli wychdozimy z metody ponieważ nie chcemy 
-                    // aby pokazały się statusy HP zwierząt, bo mogą tam być HP o minusowej wartości
+                    // robimy return, czyli wychdozimy z metody
+                    // ponieważ nie chcemy aby pokazały się statusy HP
+                    // zwierząt, bo mogą tam być HP o minusowej wartości
                     return;
                 }
             }
             else
             {
                 //W przeciwnym wypadku gdy liczba jest większa od 5 to Chomik atakuje Żabę.
-                Hamster.Attack(Frog);
+                player.Attack(enemy);
                 // Dodajemy status walki do textBlocka
-                txtStatus.Text = string.Format(fightStatus, Hamster.Name, Frog.Name);
+                txtStatus.Text = string.Format(fightStatus, player.Name, enemy.Name);
                 // Sprawdzamy czy po ataku Żaba nadal żyje
-                if (!Frog.IsAlive())
+                if (!enemy.IsAlive())
                 {
                     // Dodajemy informację o śmierci żaby
                     txtStatus.Text += "\nŻaba nie żyje!";
-                    // Dezaktywnujemy przycisk "Walka" 
+                    // Dezaktywnujemy przycisk "Walka"
                     btnBite.IsEnabled = false;
-                    // robimy return, czyli wychdozimy z metody ponieważ nie chcemy 
-                    // aby pokazały się statusy HP zwierząt, bo mogą tam być HP o minusowej wartości
+                    // robimy return, czyli wychdozimy z metody
+                    // ponieważ nie chcemy aby pokazały się statusy HP
+                    // zwierząt, bo mogą tam być HP o minusowej wartości
                     return;
                 }
             }
             //Znak nowej linii
             txtStatus.Text += "\n";
             //Wyświetlamy staus HP żaby
-            txtStatus.Text += string.Format(hpStatus, Frog.Name, Frog.HP.ToString());
+            txtStatus.Text += string.Format(hpStatus, enemy.Name, enemy.HP.ToString());
             //Znak nowej linii
             txtStatus.Text += "\n";
             //Wyświetlamy status HP chomika
-            txtStatus.Text += string.Format(hpStatus, Hamster.Name, Hamster.HP.ToString());
+            txtStatus.Text += string.Format(hpStatus, player.Name, player.HP.ToString());
 
             txtStatus.Text += "\n\n" + oldText;
         }
@@ -120,6 +122,15 @@ namespace WalkaChomika
         {
             // Wywołujemy metodę Walka
             Fight();
+        }
+
+        private void btnRun_Click(object sender, RoutedEventArgs e)
+        {
+            Random r = new Random();
+            if (r.NextDouble() > 0.5)
+            {
+                Frame.GoBack();
+            }
         }
     }
 }
