@@ -1,10 +1,25 @@
-﻿using System;
+﻿#region License
+
+/*
+ * Written in 2016/2017 by pollub.net members
+ *
+ * To the extent possible under law, the author(s) have dedicated
+ * all copyright and related and neighboring rights to this
+ * software to the public domain worldwide. This software is
+ * distributed without any warranty.
+ *
+ * You should have received a copy of the CC0 Public Domain
+ * Dedication along with this software. If not, see
+ * <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+
+#endregion License
+
+using System;
 using WalkaChomika.Models;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
 namespace WalkaChomika
 {
@@ -19,9 +34,14 @@ namespace WalkaChomika
 
         public FightPage()
         {
-            this.InitializeComponent();            
+            this.InitializeComponent();
         }
 
+        /// <summary>
+        /// Funkcja wywoływana w momencie, kiedy aplikacja przejdzie do
+        /// tej strony. Odczytuje dane, które przyszły z nawigacji
+        /// (przeciwnika) oraz go umieszcza w odpowiedniej zmiennej.
+        /// </summary>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             var f = (Animal[])e.Parameter;
@@ -32,6 +52,9 @@ namespace WalkaChomika
             UpdateEnemy();
         }
 
+        /// <summary>
+        /// Wyświetla zaktualizowane dane gracza
+        /// </summary>
         private void UpdatePlayer()
         {
             meName.Text = player.Name;
@@ -39,6 +62,9 @@ namespace WalkaChomika
             meHP.Text = $"HP: {player.HP}";
         }
 
+        /// <summary>
+        /// Wyświetla zaktualizowane dane przeciwnika
+        /// </summary>
         private void UpdateEnemy()
         {
             enemyName.Text = enemy.Name;
@@ -124,6 +150,9 @@ namespace WalkaChomika
             Fight();
         }
 
+        /// <summary>
+        /// Obsługa kliknięcia przycisku "Uciekaj"
+        /// </summary>
         private void btnRun_Click(object sender, RoutedEventArgs e)
         {
             Random r = new Random();

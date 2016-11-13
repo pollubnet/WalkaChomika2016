@@ -1,16 +1,35 @@
-﻿using System;
+﻿#region License
+
+/*
+ * Written in 2016/2017 by pollub.net members
+ *
+ * To the extent possible under law, the author(s) have dedicated
+ * all copyright and related and neighboring rights to this
+ * software to the public domain worldwide. This software is
+ * distributed without any warranty.
+ *
+ * You should have received a copy of the CC0 Public Domain
+ * Dedication along with this software. If not, see
+ * <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+
+#endregion License
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WalkaChomika.Engine;
 
 namespace WalkaChomika.Assets
 {
-    class HamsterVillage
+    /// <summary>
+    /// Klasa reprezentująca pierwszy ze światów gry
+    /// </summary>
+    internal class HamsterVillage
     {
         private Area village;
 
+        /// <summary>
+        /// Tworzy lokacje w wiosce chomików oraz dodaje tam przeciwników
+        /// </summary>
         public HamsterVillage()
         {
             village = new Area { Id = 1, Name = "Wioska Chomików", StartingPoint = new Point3 { X = 0, Y = 0, Z = 0 } };
@@ -27,13 +46,16 @@ namespace WalkaChomika.Assets
             village.Locations.Add(new Location(1, 2, 0, "Ulica Pałacowa", "Ulica Pałacowa prowadzi w kierunku pałacu Króla Chomików. Na ziemi są resztki broni oraz futra pozostałe z pewnością po potężnej walce.", Neswdu.East | Neswdu.West));
             village.Locations.Add(new Location(2, 2, 0, "Brama Pałacowa", "Brama Pałacowa broni dostępu do pałacu Króla Chomików. Odkąd pamiętasz, zawsze była zamknięta, dzisiaj jednak jest w drzazgach na ziemi, zniszczona potężnym uderzeniem.", Neswdu.East | Neswdu.West));
 
-
             var a2 = new Location(3, 2, 0, "Dziedziniec Pałacu", "Okazały dziedziniec pałacu jest w opłakanym stanie. Mury są pokruszone, wszędzie widać ślady niedawnej walki.", Neswdu.West);
             a2.Enemies = new List<Models.Animal>();
             a2.Enemies.Add(new Models.Animal() { Name = "Żaba Wojownik", Damage = 5, HP = 20, Mana = 0 });
             village.Locations.Add(a2);
         }
 
+        /// <summary>
+        /// Zwraca stworzoną krainę
+        /// </summary>
+        /// <returns>Zbudowana wioska chomików</returns>
         public Area GetArea()
         {
             return village;

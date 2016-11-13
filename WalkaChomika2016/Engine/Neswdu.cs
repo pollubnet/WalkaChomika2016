@@ -1,11 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿#region License
+
+/*
+ * Written in 2016/2017 by pollub.net members
+ *
+ * To the extent possible under law, the author(s) have dedicated
+ * all copyright and related and neighboring rights to this
+ * software to the public domain worldwide. This software is
+ * distributed without any warranty.
+ *
+ * You should have received a copy of the CC0 Public Domain
+ * Dedication along with this software. If not, see
+ * <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+
+#endregion License
+
+using System;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace WalkaChomika.Engine
 {
+    /// <summary>
+    /// Enum określający możliwe kierunki chodzenia w lokacjach
+    /// </summary>
     [Flags]
     public enum Neswdu
     {
@@ -18,8 +35,18 @@ namespace WalkaChomika.Engine
         Up = 64
     }
 
+    /// <summary>
+    /// Pomocnicza klasa dla enuma Neswdu
+    /// </summary>
     public static class NeswduHelper
     {
+        /// <summary>
+        /// Zwraca punkt, który jest w stosunku do obecnego punktu w
+        /// określonym kierunku
+        /// </summary>
+        /// <param name="current">Obecna pozycja</param>
+        /// <param name="course">Kurs</param>
+        /// <returns>Obliczona pozycja na zadanym kursie</returns>
         public static Point3 ToRelativePoint3(Point3 current, Neswdu course)
         {
             if (course.HasFlag(Neswdu.North))
@@ -43,11 +70,28 @@ namespace WalkaChomika.Engine
             return current;
         }
 
+        /// <summary>
+        /// Sprawdza, czy możliwe jest przesunięcie się na kurs kiedy
+        /// zmienna lokacji jest ustawiona w dany sposób
+        /// </summary>
+        /// <param name="neswdu">Zmienna określająca dozwolone kierunki</param>
+        /// <param name="course">Zadany kurs</param>
+        /// <returns>
+        /// Zwraca true jeśli jest możliwe przesunięcie się w danym kierunku
+        /// </returns>
         public static bool CanIGo(Neswdu neswdu, Neswdu course)
         {
             return neswdu.HasFlag(course);
         }
 
+        /// <summary>
+        /// Przekształca zmienną typu Neswdu na łańcuch znaków w języku
+        /// polskim. W przypadku jeżeli Neswdu określa więcej niż jeden
+        /// dozwolony kierunek, zmienna wynikowa będzie zawierać
+        /// wszystkie, oddzielone spacją.
+        /// </summary>
+        /// <param name="course">Zmienna z kierunkami</param>
+        /// <returns>Łańcuch znaków w języku polskim</returns>
         public static string ToNaturalLanguage(Neswdu course)
         {
             StringBuilder sb = new StringBuilder();

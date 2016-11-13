@@ -1,18 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿#region License
+
+/*
+ * Written in 2016/2017 by pollub.net members
+ *
+ * To the extent possible under law, the author(s) have dedicated
+ * all copyright and related and neighboring rights to this
+ * software to the public domain worldwide. This software is
+ * distributed without any warranty.
+ *
+ * You should have received a copy of the CC0 Public Domain
+ * Dedication along with this software. If not, see
+ * <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+
+#endregion License
+
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using WalkaChomika.Models;
 using WalkaChomika.Engine;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using WalkaChomika.Models;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
@@ -20,7 +27,8 @@ using Windows.UI.Xaml.Navigation;
 namespace WalkaChomika
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// An empty page that can be used on its own or navigated to
+    /// within a Frame.
     /// </summary>
     public sealed partial class MainPage : Page
     {
@@ -43,6 +51,9 @@ namespace WalkaChomika
             UpdateLocation();
         }
 
+        /// <summary>
+        /// Wyświetla zaktualizowane dane gracza
+        /// </summary>
         private void UpdatePlayer()
         {
             meName.Text = player.Name;
@@ -50,6 +61,9 @@ namespace WalkaChomika
             meHP.Text = $"HP: {player.HP}";
         }
 
+        /// <summary>
+        /// Wyświetla zaktualizowane dane przeciwnika
+        /// </summary>
         private void UpdateLocation()
         {
             txtLocationTitle.Text = currentLocation.Name;
@@ -73,6 +87,13 @@ namespace WalkaChomika
             Go(Neswdu.West);
         }
 
+        /// <summary>
+        /// Obsługuje możliwość "pójścia" w daną stronę lub pokazuje
+        /// komunikat, że jest to niemożliwe
+        /// </summary>
+        /// <param name="course">
+        /// Kierunek, w którym gracz chce się udać
+        /// </param>
         private void Go(Neswdu course)
         {
             if (NeswduHelper.CanIGo(currentLocation.HiddenNeswdu, course))
