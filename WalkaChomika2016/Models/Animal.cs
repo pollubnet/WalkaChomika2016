@@ -55,5 +55,14 @@ namespace WalkaChomika.Models
             // Zmiejszamy HP atakowanego zwierzęcia o wygenerowaną moc.
             animalToAttack.HP -= strength;
         }
+
+        public override string ToString()
+        {
+            var desc = new string[] { "stoi tutaj", "rozgląda się nerwowo", "szuka zaczepki" };
+            Random r = new Random();
+            var d = desc[r.Next(desc.Length)];
+
+            return $"{Name} {d}.";
+        }
     }
 }
