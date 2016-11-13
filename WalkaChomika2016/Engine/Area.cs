@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
 
-namespace Ktos.Aisle.Engine.Areas
+namespace WalkaChomika.Engine
 {
     public class Area
     {

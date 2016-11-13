@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using WalkaChomika.Models;
 using Windows.Foundation;
 
-namespace Ktos.Aisle.Engine.Areas
+namespace WalkaChomika.Engine
 {
     public class Location
     {

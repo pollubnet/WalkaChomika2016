@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
 
-namespace WalkaChomika2016.Engine
+namespace WalkaChomika.Engine
 {
     public static class Extensions
     {

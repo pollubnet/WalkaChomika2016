@@ -1,4 +1,4 @@
-﻿namespace Ktos.Aisle.Engine.Areas
+﻿namespace WalkaChomika.Engine
 {
     public struct Point3
     {

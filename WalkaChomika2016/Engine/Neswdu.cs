@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ktos.Aisle.Engine.Areas
+namespace WalkaChomika.Engine
 {
     [Flags]
     public enum Neswdu
