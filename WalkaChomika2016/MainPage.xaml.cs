@@ -1,117 +1,124 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿#region License
+
+/*
+ * Written in 2016/2017 by pollub.net members
+ *
+ * To the extent possible under law, the author(s) have dedicated
+ * all copyright and related and neighboring rights to this
+ * software to the public domain worldwide. This software is
+ * distributed without any warranty.
+ *
+ * You should have received a copy of the CC0 Public Domain
+ * Dedication along with this software. If not, see
+ * <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+
+#endregion License
+
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using WalkaChomika.Engine;
+using WalkaChomika.Models;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
+// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace WalkaChomika
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// An empty page that can be used on its own or navigated to
+    /// within a Frame.
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private Animal Frog;
-        private Animal Hamster;
+        private Area currentArea;
+        private Location currentLocation;
+        private Animal player;
 
         public MainPage()
         {
             this.InitializeComponent();
+            NavigationCacheMode = NavigationCacheMode.Enabled;
 
-            //Tworzymy obiekt Zwierzęcia i przypisujemy referencję do zmiennej Frog, nadajemy mu imię, HP, Damage oraz Mane
-            Frog = new Animal();
-            Frog.Name = "Basia";
-            Frog.HP = 50;
-            Frog.Damage = 20;
-            Frog.Mana = 0;
+            currentArea = new Assets.HamsterVillage().GetArea();
+            currentLocation = currentArea.GetLocation(currentArea.StartingPoint);
+            txtLog.AddToBeginning($"Przybyłeś do {currentArea.Name}");
 
-            //Tworzymy obiekt Zwierzęcia i przypisujemy referencję do zmiennej Hamster, nadajemy mu imię, HP, Damage oraz Mane
-            Hamster = new Animal();
-            Hamster.Name = "Janusz";
-            Hamster.HP = 70;
-            Hamster.Damage = 10;
-            Hamster.Mana = 0;
+            player = new Animal { Name = "Staszek", HP = 10, Damage = 1, Mana = 0 };
+            UpdatePlayer();
+
+            UpdateLocation();
         }
 
         /// <summary>
-        /// Metoda którą symuluje walkę miedzy dwoma zwierzętami
+        /// Wyświetla zaktualizowane dane gracza
         /// </summary>
-        public void Fight()
+        private void UpdatePlayer()
         {
-            // Tworzymy instancję generatora liczb losowych
-            Random generator = new Random();
-            // Zmienna dla tekstu ze stausem HP.
-            string hpStatus = "Zwierzę {0} ma {1} HP.";
-            // Zmiennas ze stasusem przebiegu walki.
-            string fightStatus = "Zwierzę {0} zaatakowało zwierzę {1}.";
+            meName.Text = player.Name;
+            meDamage.Text = $"Dmg: 0-{player.Damage}";
+            meHP.Text = $"HP: {player.HP}";
+        }
 
-            // generujemy losową liczbę od 0 do 10
-            int whoAttack = generator.Next(10);
+        /// <summary>
+        /// Wyświetla zaktualizowane dane przeciwnika
+        /// </summary>
+        private void UpdateLocation()
+        {
+            txtLocationTitle.Text = currentLocation.Name;
+            txtLocationNeswdu.Text = $"Kierunki: {NeswduHelper.ToNaturalLanguage(currentLocation.Neswdu)}";
+            txtLocationDescription.Text = currentLocation.Description;
+            lbLocationEnemies.ItemsSource = currentLocation.Enemies;
+        }
 
-            if (whoAttack < 5)
+        private void GoNorth(object sender, RoutedEventArgs e)
+        {
+            Go(Neswdu.North);
+        }
+
+        private void GoEast(object sender, RoutedEventArgs e)
+        {
+            Go(Neswdu.East);
+        }
+
+        private void GoWest(object sender, RoutedEventArgs e)
+        {
+            Go(Neswdu.West);
+        }
+
+        /// <summary>
+        /// Obsługuje możliwość "pójścia" w daną stronę lub pokazuje
+        /// komunikat, że jest to niemożliwe
+        /// </summary>
+        /// <param name="course">
+        /// Kierunek, w którym gracz chce się udać
+        /// </param>
+        private void Go(Neswdu course)
+        {
+            if (NeswduHelper.CanIGo(currentLocation.HiddenNeswdu, course))
             {
-                // Gdy została wylosowana liczba mniejsza od 5 to nasz obiekt Żaby będzie atakował Chomika
-                Frog.Attack(Hamster);
-                // Do kontrolki textBlocka przypisujemy tekst zmiennej dodając w {0} i {1} imiona zwierząt.
-                txtStatus.Text = string.Format(fightStatus, Frog.Name, Hamster.Name);
-                // Sprawdzamy czy chomik nadal żyje po ataku.
-                if (!Hamster.IsAlive())
-                {
-                    // Dodajemy tekst że chomik nie żyje
-                    txtStatus.Text += "\nChomik nie żyje!";
-                    // Wyłączamy przyciskowi "Wlacz" możliwość klikania.
-                    btnFight.IsEnabled = false;
-                    // robimy return, czyli wychdozimy z metody ponieważ nie chcemy 
-                    // aby pokazały się statusy HP zwierząt, bo mogą tam być HP o minusowej wartości
-                    return;
-                }
+                currentLocation = currentArea.GetLocation(NeswduHelper.ToRelativePoint3(currentLocation.Coordinates, course));
+                UpdateLocation();
+                txtLog.AddToBeginning($"Poszedłeś na {NeswduHelper.ToNaturalLanguage(course)}");
             }
             else
             {
-                //W przeciwnym wypadku gdy liczba jest większa od 5 to Chomik atakuje Żabę.
-                Hamster.Attack(Frog);
-                // Dodajemy status walki do textBlocka
-                txtStatus.Text = string.Format(fightStatus, Hamster.Name, Frog.Name);
-                // Sprawdzamy czy po ataku Żaba nadal żyje
-                if (!Frog.IsAlive())
-                {
-                    // Dodajemy informację o śmierci żaby
-                    txtStatus.Text += "\nŻaba nie żyje!";
-                    // Dezaktywnujemy przycisk "Walka" 
-                    btnFight.IsEnabled = false;
-                    // robimy return, czyli wychdozimy z metody ponieważ nie chcemy 
-                    // aby pokazały się statusy HP zwierząt, bo mogą tam być HP o minusowej wartości
-                    return;
-                }
+                txtLog.AddToBeginning("Nie możesz tam pójść!");
             }
-            //Znak nowej linii
-            txtStatus.Text += "\n";
-            //Wyświetlamy staus HP żaby
-            txtStatus.Text += string.Format(hpStatus, Frog.Name, Frog.HP.ToString());
-            //Znak nowej linii
-            txtStatus.Text += "\n";
-            //Wyświetlamy status HP chomika
-            txtStatus.Text += string.Format(hpStatus, Hamster.Name, Hamster.HP.ToString());
         }
 
-        /// <summary>
-        /// Zdarzenie klinięcia przycisku "Walcz"
-        /// </summary>
-        private void btnFight_Click(object sender, RoutedEventArgs e)
+        private void GoSouth(object sender, RoutedEventArgs e)
         {
-            // Wywołujemy metodę Walka
-            Fight();
+            Go(Neswdu.South);
+        }
+
+        private void lbLocationEnemies_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (lbLocationEnemies.SelectedItem != null)
+            {
+                Frame.Navigate(typeof(FightPage), new Animal[] { player, currentLocation.Enemies.First() });
+            }
         }
     }
 }
