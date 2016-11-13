@@ -32,6 +32,7 @@ namespace WalkaChomika
         public MainPage()
         {
             this.InitializeComponent();
+            NavigationCacheMode = NavigationCacheMode.Enabled;
 
             currentArea = new Assets.HamsterVillage().GetArea();
             currentLocation = currentArea.GetLocation(currentArea.StartingPoint);
