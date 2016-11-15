@@ -45,7 +45,7 @@ namespace WalkaChomika
             currentLocation = currentArea.GetLocation(currentArea.StartingPoint);
             txtLog.AddToBeginning($"Przybyłeś do {currentArea.Name}");
 
-            player = new Animal { Name = "Staszek", HP = 10, Damage = 1, Mana = 0 };
+            player = new HamsterShaman("Staszek");
             UpdatePlayer();
 
             UpdateLocation();
@@ -58,7 +58,12 @@ namespace WalkaChomika
         {
             meName.Text = player.Name;
             meDamage.Text = $"Dmg: 0-{player.Damage}";
-            meHP.Text = $"HP: {player.HP}";
+            meHP.Text = string.Format("HP: {0}", player.HP);
+
+            if (player is MagicAnimal)
+                meMana.Text = $"Mana: {player.Mana}";
+            else
+                meMana.Text = "Nie jesteś magiem.";
         }
 
         /// <summary>

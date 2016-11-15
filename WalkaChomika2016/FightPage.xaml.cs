@@ -16,7 +16,9 @@
 #endregion License
 
 using System;
+using WalkaChomika.Engine;
 using WalkaChomika.Models;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -31,6 +33,8 @@ namespace WalkaChomika
     {
         private Animal enemy;
         private Animal player;
+
+        private bool isMyTurn;
 
         public FightPage()
         {
@@ -50,6 +54,14 @@ namespace WalkaChomika
 
             UpdatePlayer();
             UpdateEnemy();
+
+            if (player.Agility > enemy.Agility)
+                isMyTurn = true;
+            else
+                isMyTurn = false;
+
+            if (!(player is MagicAnimal))
+                btnMagicAttack.IsEnabled = false;
         }
 
         /// <summary>
@@ -59,7 +71,12 @@ namespace WalkaChomika
         {
             meName.Text = player.Name;
             meDamage.Text = $"Dmg: 0-{player.Damage}";
-            meHP.Text = $"HP: {player.HP}";
+            meHP.Text = string.Format("HP: {0}", player.HP);
+
+            if (player is MagicAnimal)
+                meMana.Text = $"Mana: {player.Mana}";
+            else
+                meMana.Text = "Nie jesteś magiem.";
         }
 
         /// <summary>
@@ -76,69 +93,50 @@ namespace WalkaChomika
         /// </summary>
         public void Fight()
         {
-            // Tworzymy instancję generatora liczb losowych
-            Random generator = new Random();
-            // Zmienna dla tekstu ze stausem HP.
-            string hpStatus = "Zwierzę {0} ma {1} HP.";
-            // Zmiennas ze stasusem przebiegu walki.
-            string fightStatus = "Zwierzę {0} zaatakowało zwierzę {1}.";
+            Random r = new Random();
 
-            // generujemy losową liczbę od 0 do 10
-            int whoAttack = generator.Next(10);
-
-            string oldText = txtStatus.Text;
-
-            if (whoAttack < 5)
+            if (r.Next(10) > enemy.Agility)
             {
-                // Gdy została wylosowana liczba mniejsza od 5 to nasz
-                // obiekt Żaby będzie atakował Chomika
-                enemy.Attack(player);
-                // Do kontrolki textBlocka przypisujemy tekst zmiennej
-                // dodając w {0} i {1} imiona zwierząt.
-
-                txtStatus.Text = string.Format(fightStatus, enemy.Name, player.Name);
-                // Sprawdzamy czy chomik nadal żyje po ataku.
-                if (!player.IsAlive())
+                if (isMyTurn)
                 {
-                    // Dodajemy tekst że chomik nie żyje
-                    txtStatus.Text += "\nChomik nie żyje!";
-                    // Wyłączamy przyciskowi "Wlacz" możliwość klikania.
-                    btnBite.IsEnabled = false;
-                    // robimy return, czyli wychdozimy z metody
-                    // ponieważ nie chcemy aby pokazały się statusy HP
-                    // zwierząt, bo mogą tam być HP o minusowej wartości
-                    return;
-                }
-            }
-            else
-            {
-                //W przeciwnym wypadku gdy liczba jest większa od 5 to Chomik atakuje Żabę.
-                player.Attack(enemy);
-                // Dodajemy status walki do textBlocka
-                txtStatus.Text = string.Format(fightStatus, player.Name, enemy.Name);
-                // Sprawdzamy czy po ataku Żaba nadal żyje
-                if (!enemy.IsAlive())
-                {
-                    // Dodajemy informację o śmierci żaby
-                    txtStatus.Text += "\nŻaba nie żyje!";
-                    // Dezaktywnujemy przycisk "Walka"
-                    btnBite.IsEnabled = false;
-                    // robimy return, czyli wychdozimy z metody
-                    // ponieważ nie chcemy aby pokazały się statusy HP
-                    // zwierząt, bo mogą tam być HP o minusowej wartości
-                    return;
-                }
-            }
-            //Znak nowej linii
-            txtStatus.Text += "\n";
-            //Wyświetlamy staus HP żaby
-            txtStatus.Text += string.Format(hpStatus, enemy.Name, enemy.HP.ToString());
-            //Znak nowej linii
-            txtStatus.Text += "\n";
-            //Wyświetlamy status HP chomika
-            txtStatus.Text += string.Format(hpStatus, player.Name, player.HP.ToString());
+                    int dmg = r.Next(player.Damage + 1);
+                    enemy.HP -= dmg;
 
-            txtStatus.Text += "\n\n" + oldText;
+                    if (enemy.HP < 0)
+                        Win();
+
+                    UpdateEnemy();
+                    txtStatus.AddToBeginning($"{player.Name} zadał {dmg} obrażeń.");
+                }
+                else
+                {
+                    int dmg = r.Next(enemy.Damage + 1);
+                    player.HP -= dmg;
+
+                    if (player.HP < 0)
+                        Lose();
+
+                    UpdatePlayer();
+                    txtStatus.AddToBeginning($"{enemy.Name} zadał {dmg} obrażeń.");
+                }                           
+            }
+
+            isMyTurn = !isMyTurn;
+        }
+
+        private void Lose()
+        {
+            string message = "Przegrałeś.";
+            MessageDialog dlg = new MessageDialog(message);
+
+            dlg.ShowAsync();
+            btnBite.IsEnabled = false;
+            btnRun.IsEnabled = false;
+        }
+
+        private void Win()
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -146,8 +144,10 @@ namespace WalkaChomika
         /// </summary>
         private void btnFight_Click(object sender, RoutedEventArgs e)
         {
-            // Wywołujemy metodę Walka
-            Fight();
+            if (isMyTurn)
+                Fight();
+            else
+                Fight();           
         }
 
         /// <summary>
@@ -155,11 +155,34 @@ namespace WalkaChomika
         /// </summary>
         private void btnRun_Click(object sender, RoutedEventArgs e)
         {
-            Random r = new Random();
-            if (r.NextDouble() > 0.5)
+            if (isMyTurn)
             {
-                Frame.GoBack();
+                Random r = new Random();
+                if (r.NextDouble() > 0.5)
+                {
+                    Frame.GoBack();
+                }
             }
+
+            isMyTurn = !isMyTurn;
+        }
+
+        private void btnMagicAttack_Click(object sender, RoutedEventArgs e)
+        {
+            if (isMyTurn)
+            {
+                int dmg = (player as MagicAnimal).MagicAttack();
+                enemy.HP -= dmg;
+
+                if (enemy.HP < 0)
+                    Win();
+
+                UpdateEnemy();
+                txtStatus.AddToBeginning($"{player.Name} zadał {dmg} obrażeń.");
+
+            }
+            else
+                Fight();
         }
     }
 }

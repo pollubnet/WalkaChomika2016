@@ -41,6 +41,8 @@ namespace WalkaChomika.Models
         /// </summary>
         public int Damage;
 
+        public int Agility;
+
         /// <summary>
         /// Metoda okresla czy zwierzę nadla żuję
         /// </summary>

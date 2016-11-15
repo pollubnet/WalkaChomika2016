@@ -27,6 +27,7 @@
             <TextBlock x:Name="meName" Text="Imię (Typ)" FontSize="30" />
             <TextBlock x:Name="meHP" Text="HP" FontSize="20" />
             <TextBlock x:Name="meDamage" Text="Dmg" FontSize="20" />
+            <TextBlock x:Name="meMana" Text="Mana" FontSize="20" />
         </StackPanel>
 
         <ScrollViewer Grid.Column="1" Grid.Row="1">

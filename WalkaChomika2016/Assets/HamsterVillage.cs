@@ -39,7 +39,12 @@ namespace WalkaChomika.Assets
 
             var a1 = new Location(0, 1, 0, "Ulica Bramowa", "Ulica Bramowa prowadzi od północnej bramy na końcu świata do centrum wioski. Wydaje ci się, że na ziemi widzisz ślady krwi.", Neswdu.South | Neswdu.North);
             a1.Enemies = new List<Models.Animal>();
-            a1.Enemies.Add(new Models.Animal() { Name = "Żaba Strażnik", Damage = 2, HP = 10, Mana = 0 });
+            //a1.Enemies.Add(new Models.Animal() { Name = "Żaba Strażnik", Damage = 2, HP = 10, Mana = 0 });
+
+            a1.Enemies.Add(new Models.FrogSentry());
+            a1.Enemies.Add(new Models.FrogSentry());
+            a1.Enemies.Add(new Models.FrogSentry());
+
             village.Locations.Add(a1);
 
             village.Locations.Add(new Location(0, 2, 0, "Plac Główny", "Główny plac wioski leży na skrzyżowaniu Ulicy Bramowej oraz Ulicy Pałacowej, prowadzących do bramy oraz do pałacu, odpowiednio. Pamiętasz, kiedy był pełen chomików sprzedających różne towary, dzisiaj jednak jest całkowicie pusty i wymarły. Na ziemi są duże ilości krwi i ślady walki.", Neswdu.East | Neswdu.North));
