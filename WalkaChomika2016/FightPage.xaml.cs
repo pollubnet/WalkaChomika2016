@@ -31,8 +31,7 @@ namespace WalkaChomika
     /// </summary>
     public sealed partial class FightPage : Page
     {
-        private Animal enemy;
-        private Animal player;
+        private Animal enemy;        
 
         private bool isMyTurn;
 
@@ -48,9 +47,9 @@ namespace WalkaChomika
         /// </summary>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            var f = (Animal[])e.Parameter;
-            player = f[0];
-            enemy = f[1];
+            var player = App.Player;
+
+            enemy = (Animal)e.Parameter;
 
             UpdatePlayer();
             UpdateEnemy();
@@ -60,7 +59,7 @@ namespace WalkaChomika
             else
                 isMyTurn = false;
 
-            if (!(player is MagicAnimal))
+            if (!(player is IMagicAnimal))
                 btnMagicAttack.IsEnabled = false;
         }
 
@@ -69,11 +68,13 @@ namespace WalkaChomika
         /// </summary>
         private void UpdatePlayer()
         {
+            var player = App.Player;
+
             meName.Text = player.Name;
             meDamage.Text = $"Dmg: 0-{player.Damage}";
             meHP.Text = string.Format("HP: {0}", player.HP);
 
-            if (player is MagicAnimal)
+            if (player is IMagicAnimal)
                 meMana.Text = $"Mana: {player.Mana}";
             else
                 meMana.Text = "Nie jesteś magiem.";
@@ -93,16 +94,18 @@ namespace WalkaChomika
         /// </summary>
         public void Fight()
         {
+            var player = App.Player;
+
             Random r = new Random();
 
-            if (r.Next(10) > enemy.Agility)
+            if (isMyTurn)
             {
-                if (isMyTurn)
+                if (r.Next(10) > enemy.Agility)
                 {
-                    int dmg = r.Next(player.Damage + 1);
+                    var dmg = player.Attack();
                     enemy.HP -= dmg;
 
-                    if (enemy.HP < 0)
+                    if (!enemy.IsAlive())
                         Win();
 
                     UpdateEnemy();
@@ -110,16 +113,29 @@ namespace WalkaChomika
                 }
                 else
                 {
-                    int dmg = r.Next(enemy.Damage + 1);
+                    txtStatus.AddToBeginning($"{player.Name} nie trafił.");
+                }                               
+            }
+            else
+            {
+                if (r.Next(10) > player.Agility)
+                {
+                    var dmg = enemy.Attack();
                     player.HP -= dmg;
 
-                    if (player.HP < 0)
+                    if (!player.IsAlive())
                         Lose();
 
                     UpdatePlayer();
                     txtStatus.AddToBeginning($"{enemy.Name} zadał {dmg} obrażeń.");
-                }                           
+                }
+                else
+                {
+                    txtStatus.AddToBeginning($"{enemy.Name} nie trafił.");
+                }
             }
+
+            
 
             isMyTurn = !isMyTurn;
         }
@@ -132,11 +148,17 @@ namespace WalkaChomika
             dlg.ShowAsync();
             btnBite.IsEnabled = false;
             btnRun.IsEnabled = false;
+            btnMagicAttack.IsEnabled = false;
         }
 
-        private void Win()
+        private async void Win()
         {
-            throw new NotImplementedException();
+            string message = "Wygrałeś.";
+            MessageDialog dlg = new MessageDialog(message);
+
+            await dlg.ShowAsync();
+
+            Frame.GoBack();
         }
 
         /// <summary>
@@ -169,9 +191,11 @@ namespace WalkaChomika
 
         private void btnMagicAttack_Click(object sender, RoutedEventArgs e)
         {
+            var player = App.Player;
+
             if (isMyTurn)
             {
-                int dmg = (player as MagicAnimal).MagicAttack();
+                int dmg = (player as IMagicAnimal).MagicAttack();
                 enemy.HP -= dmg;
 
                 if (enemy.HP < 0)
@@ -179,7 +203,6 @@ namespace WalkaChomika
 
                 UpdateEnemy();
                 txtStatus.AddToBeginning($"{player.Name} zadał {dmg} obrażeń.");
-
             }
             else
                 Fight();

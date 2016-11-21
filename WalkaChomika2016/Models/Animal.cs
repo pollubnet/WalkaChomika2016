@@ -19,7 +19,7 @@ using System;
 
 namespace WalkaChomika.Models
 {
-    public class Animal
+    public abstract class Animal
     {
         /// <summary>
         /// Poziom życia.
@@ -64,7 +64,7 @@ namespace WalkaChomika.Models
         /// <param name="animalToAttack">
         /// Obiekt zwierzęcia któego ma zaatakować
         /// </param>
-        public void Attack(Animal animalToAttack)
+        public int Attack()
         {
             // tworzymy obiekt generatora liczb losowych
             Random generator = new Random();
@@ -72,11 +72,12 @@ namespace WalkaChomika.Models
             // Ustawiamy poziom mocy z jaką uderzymy, czyli
             // genererujemy losową liczbę od 0 do maksymalnego poziomu
             // obrażeń zwierzęcia.
-            int strength = generator.Next(Damage);
+            int strength = generator.Next(Damage + 1);
 
-            // Zmiejszamy HP atakowanego zwierzęcia o wygenerowaną moc.
-            animalToAttack.HP -= strength;
+            return strength;
         }
+
+        public abstract int Fight();
 
         public override string ToString()
         {

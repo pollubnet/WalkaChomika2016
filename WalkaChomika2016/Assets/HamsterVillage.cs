@@ -43,7 +43,6 @@ namespace WalkaChomika.Assets
 
             a1.Enemies.Add(new Models.FrogSentry());
             a1.Enemies.Add(new Models.FrogSentry());
-            a1.Enemies.Add(new Models.FrogSentry());
 
             village.Locations.Add(a1);
 
@@ -53,7 +52,8 @@ namespace WalkaChomika.Assets
 
             var a2 = new Location(3, 2, 0, "Dziedziniec Pałacu", "Okazały dziedziniec pałacu jest w opłakanym stanie. Mury są pokruszone, wszędzie widać ślady niedawnej walki.", Neswdu.West);
             a2.Enemies = new List<Models.Animal>();
-            a2.Enemies.Add(new Models.Animal() { Name = "Żaba Wojownik", Damage = 5, HP = 20, Mana = 0 });
+            //a2.Enemies.Add(new Models.Animal() { Name = "Żaba Wojownik", Damage = 5, HP = 20, Mana = 0 });
+            a2.Enemies.Add(new Models.Pegasus("Dżesika"));
             village.Locations.Add(a2);
         }
 

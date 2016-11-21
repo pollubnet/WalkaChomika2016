@@ -6,14 +6,28 @@ using System.Threading.Tasks;
 
 namespace WalkaChomika.Models
 {
-    class HamsterShaman : MagicAnimal
+    class HamsterShaman : Hamster, IMagicAnimal
     {
-        public HamsterShaman(string name)
+        public HamsterShaman(string name) : base(name)
         {
-            Name = name;
             HP = 10;
             Damage = 1;
             Mana = 10;
+        }
+
+        public int MagicAttack()
+        {
+            Random r = new Random();
+            if (Mana > 0)
+            {
+                Mana--;
+                return r.Next(Damage * 10);
+            }
+            else
+            {
+                return 0;
+            }
+           
         }
     }
 }

@@ -111,7 +111,9 @@
     <Compile Include="Models\Frog.cs" />
     <Compile Include="Models\Hamster.cs" />
     <Compile Include="Models\HamsterShaman.cs" />
-    <Compile Include="Models\MagicAnimal.cs" />
+    <Compile Include="Models\IFlying.cs" />
+    <Compile Include="Models\IMagicAnimal.cs" />
+    <Compile Include="Models\Pegasus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

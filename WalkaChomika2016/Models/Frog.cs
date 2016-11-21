@@ -16,5 +16,10 @@ namespace WalkaChomika.Models
             Mana = 0;
             Agility = 2;
         }
+
+        public override int Fight()
+        {
+            return Attack();
+        }
     }
 }

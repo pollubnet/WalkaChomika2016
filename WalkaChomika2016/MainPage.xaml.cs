@@ -33,8 +33,7 @@ namespace WalkaChomika
     public sealed partial class MainPage : Page
     {
         private Area currentArea;
-        private Location currentLocation;
-        private Animal player;
+        private Location currentLocation;        
 
         public MainPage()
         {
@@ -45,10 +44,17 @@ namespace WalkaChomika
             currentLocation = currentArea.GetLocation(currentArea.StartingPoint);
             txtLog.AddToBeginning($"Przybyłeś do {currentArea.Name}");
 
-            player = new HamsterShaman("Staszek");
+            App.Player = new HamsterShaman("Staszek");
             UpdatePlayer();
 
             UpdateLocation();
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            UpdatePlayer();
         }
 
         /// <summary>
@@ -56,11 +62,13 @@ namespace WalkaChomika
         /// </summary>
         private void UpdatePlayer()
         {
+            var player = App.Player;
+
             meName.Text = player.Name;
             meDamage.Text = $"Dmg: 0-{player.Damage}";
             meHP.Text = string.Format("HP: {0}", player.HP);
 
-            if (player is MagicAnimal)
+            if (player is IMagicAnimal)
                 meMana.Text = $"Mana: {player.Mana}";
             else
                 meMana.Text = "Nie jesteś magiem.";
@@ -100,7 +108,7 @@ namespace WalkaChomika
         /// Kierunek, w którym gracz chce się udać
         /// </param>
         private void Go(Neswdu course)
-        {
+        {       
             if (NeswduHelper.CanIGo(currentLocation.HiddenNeswdu, course))
             {
                 currentLocation = currentArea.GetLocation(NeswduHelper.ToRelativePoint3(currentLocation.Coordinates, course));
@@ -122,7 +130,7 @@ namespace WalkaChomika
         {
             if (lbLocationEnemies.SelectedItem != null)
             {
-                Frame.Navigate(typeof(FightPage), new Animal[] { player, currentLocation.Enemies.First() });
+                Frame.Navigate(typeof(FightPage), lbLocationEnemies.SelectedItem);
             }
         }
     }

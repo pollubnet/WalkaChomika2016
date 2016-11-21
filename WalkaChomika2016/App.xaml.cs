@@ -16,6 +16,7 @@
 #endregion License
 
 using System;
+using WalkaChomika.Models;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
@@ -40,6 +41,8 @@ namespace WalkaChomika
             this.InitializeComponent();
             this.Suspending += OnSuspending;
         }
+
+        public static Animal Player;
 
         /// <summary>
         /// Invoked when the application is launched normally by the

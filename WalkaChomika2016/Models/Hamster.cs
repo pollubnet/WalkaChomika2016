@@ -15,5 +15,10 @@ namespace WalkaChomika.Models
             Damage = 1;
             Mana = 0;
         }
+
+        public override int Fight()
+        {
+            return Attack();
+        }
     }
 }
