@@ -15,9 +15,11 @@
 
 #endregion License
 
+using System;
 using System.Linq;
 using WalkaChomika.Engine;
 using WalkaChomika.Models;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -40,14 +42,27 @@ namespace WalkaChomika
             this.InitializeComponent();
             NavigationCacheMode = NavigationCacheMode.Enabled;
 
-            currentArea = new Assets.HamsterVillage().GetArea();
-            currentLocation = currentArea.GetLocation(currentArea.StartingPoint);
-            txtLog.AddToBeginning($"Przybyłeś do {currentArea.Name}");
+            try
+            {
+                currentArea = new Assets.FrogVillage().GetArea();
+                currentLocation = currentArea.GetLocation(currentArea.StartingPoint);
+                txtLog.AddToBeginning($"Przybyłeś do {currentArea.Name}");
 
-            App.Player = new HamsterShaman("Staszek");
-            UpdatePlayer();
+                App.Player = new HamsterShaman("Staszek");
+                UpdatePlayer();
 
-            UpdateLocation();
+                UpdateLocation();
+            }
+            catch (NullReferenceException ex)
+            {
+                var m = new MessageDialog("Nie da się załadować tej krainy bo nie i już!" + ex.Message);
+                m.ShowAsync();
+            }
+            catch (Exception ex)
+            {
+                var m = new MessageDialog("Nie da się załadować tej krainy, bo: " + ex.Message);
+                m.ShowAsync();
+            }
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -81,7 +96,8 @@ namespace WalkaChomika
         {
             txtLocationTitle.Text = currentLocation.Name;
             txtLocationNeswdu.Text = $"Kierunki: {NeswduHelper.ToNaturalLanguage(currentLocation.Neswdu)}";
-            txtLocationDescription.Text = currentLocation.Description;
+            txtLocationDescription.Text = currentLocation.Description;            
+
             lbLocationEnemies.ItemsSource = currentLocation.Enemies;
         }
 
@@ -111,9 +127,17 @@ namespace WalkaChomika
         {       
             if (NeswduHelper.CanIGo(currentLocation.HiddenNeswdu, course))
             {
-                currentLocation = currentArea.GetLocation(NeswduHelper.ToRelativePoint3(currentLocation.Coordinates, course));
-                UpdateLocation();
-                txtLog.AddToBeginning($"Poszedłeś na {NeswduHelper.ToNaturalLanguage(course)}");
+                try
+                {
+                    currentLocation = currentArea.GetLocation(NeswduHelper.ToRelativePoint3(currentLocation.Coordinates, course));
+                    UpdateLocation();
+                    txtLog.AddToBeginning($"Poszedłeś na {NeswduHelper.ToNaturalLanguage(course)}");
+                }
+                catch
+                {
+                    var m = new MessageDialog("Nie da się załadować tej lokacji");
+                    m.ShowAsync();
+                }
             }
             else
             {

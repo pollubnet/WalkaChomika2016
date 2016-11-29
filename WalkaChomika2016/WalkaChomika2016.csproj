@@ -92,6 +92,7 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\FrogVillage.cs" />
     <Compile Include="Assets\HamsterVillage.cs" />
     <Compile Include="Engine\Area.cs" />
     <Compile Include="Engine\Extensions.cs" />

@@ -33,9 +33,9 @@ namespace WalkaChomika.Assets
         public HamsterVillage()
         {
             village = new Area { Id = 1, Name = "Wioska Chomików", StartingPoint = new Point3 { X = 0, Y = 0, Z = 0 } };
-            village.Locations = new List<Location>();
 
-            village.Locations.Add(new Location(0, 0, 0, "Brama Wioski Chomików", "Brama wioski chomików jest bardzo zakurzona, bo dawno tutaj nikt nie sprzątał.", Neswdu.South));
+            village.Locations = new List<Location>();
+            village.Locations.Add(new Location(0, 0, 0, "Brama Wioski Chomików", "Brama wioski chomików jest bardzo zakurzona, bo dawno tutaj nikt nie sprzątał.", Neswdu.South | Neswdu.East));
 
             var a1 = new Location(0, 1, 0, "Ulica Bramowa", "Ulica Bramowa prowadzi od północnej bramy na końcu świata do centrum wioski. Wydaje ci się, że na ziemi widzisz ślady krwi.", Neswdu.South | Neswdu.North);
             a1.Enemies = new List<Models.Animal>();
