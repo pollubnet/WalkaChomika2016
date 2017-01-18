@@ -16,10 +16,11 @@
 #endregion License
 
 using System;
+using System.ComponentModel;
 
 namespace WalkaChomika.Models
 {
-    public abstract class Animal
+    public abstract class Animal : INotifyPropertyChanged
     {
         /// <summary>
         /// Poziom życia.
@@ -29,7 +30,42 @@ namespace WalkaChomika.Models
         /// <summary>
         /// Imię zwierzęcia.
         /// </summary>
-        public string Name;
+
+        private string name;
+
+        public string Name
+        {
+            get
+            {
+                return name;
+            }
+
+            set
+            {
+                if (this.name != value)
+                {
+                    name = value;
+                    OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Even run when databound property is changed
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Handles when property is changed raising <see cref="PropertyChanged"/>
+        /// event.
+        /// 
+        /// Part of <see cref="INotifyPropertyChanged"/> implementation.
+        /// </summary>
+        /// <param name="name">Name of a changed property</param>
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
 
         /// <summary>
         /// Mana zierzęcia

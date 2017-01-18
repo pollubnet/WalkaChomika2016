@@ -24,7 +24,7 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel x:Name="me" Grid.Column="0" Grid.Row="1">
-            <TextBlock x:Name="meName" Text="Imię (Typ)" FontSize="30" />
+            <TextBlock x:Name="meName" Text="{Binding Name}" FontSize="30" />
             <TextBlock x:Name="meHP" Text="HP" FontSize="20" />
             <TextBlock x:Name="meDamage" Text="Dmg" FontSize="20" />
             <TextBlock x:Name="meMana" Text="Mana" FontSize="20" />
@@ -60,10 +60,12 @@
             </ScrollViewer>
 
             <StackPanel Grid.Row="1" Orientation="Vertical">
-                <Button Content="North" HorizontalAlignment="Stretch" Click="GoNorth" />
-                <Button Content="East" HorizontalAlignment="Stretch" Click="GoEast" />
-                <Button Content="South" HorizontalAlignment="Stretch" Click="GoSouth" />
-                <Button Content="West" HorizontalAlignment="Stretch" Click="GoWest" />
+                <Button Content="North" HorizontalAlignment="Stretch" Click="OnClick" />
+                <Button Content="East" HorizontalAlignment="Stretch" Click="OnClick" />
+                <Button Content="South" HorizontalAlignment="Stretch" Click="OnClick" />
+                <Button Content="West" HorizontalAlignment="Stretch" Click="OnClick" />
+
+                <Button Content="Change my name!" x:Name="btnChangeName"/>
             </StackPanel>
         </Grid>
 

@@ -35,7 +35,7 @@ namespace WalkaChomika
     public sealed partial class MainPage : Page
     {
         private Area currentArea;
-        private Location currentLocation;        
+        private Location currentLocation;
 
         public MainPage()
         {
@@ -44,7 +44,8 @@ namespace WalkaChomika
 
             try
             {
-                currentArea = new Assets.FrogVillage().GetArea();
+                //currentArea = new Assets.FrogVillage().GetArea();
+                currentArea = new Assets.HamsterVillage().GetArea();
                 currentLocation = currentArea.GetLocation(currentArea.StartingPoint);
                 txtLog.AddToBeginning($"Przybyłeś do {currentArea.Name}");
 
@@ -63,6 +64,42 @@ namespace WalkaChomika
                 var m = new MessageDialog("Nie da się załadować tej krainy, bo: " + ex.Message);
                 m.ShowAsync();
             }
+
+            btnChangeName.Click += BtnChangeName_Click;
+            btnChangeName.Click += (s, e) => { App.Player.Name = App.Player.Name + "!"; };
+
+            DispatcherTimer dt = new DispatcherTimer();
+            dt.Interval = TimeSpan.FromSeconds(1);
+            dt.Tick += (s, e) => { BtnChangeName_Click(null, null); };
+
+            dt.Start();
+        }
+
+        private void BtnChangeName_Click(object sender, RoutedEventArgs e)
+        {
+            App.Player.Name = GenerateName();
+        }
+
+        private string GenerateName()
+        {
+            Random r = new Random();
+
+            var vovels = new char[] { 'a', 'e', 'i', 'o', 'u' };
+            var consonants = "bcdfghjklmnpqrstvxz";
+
+            string result = string.Empty;
+            var length = r.Next(7) + 2;
+            for (int i = 0; i < length; i++)
+            {
+                if (i % 2 == 0)
+                    result += consonants[r.Next(consonants.Length)];
+                else
+                    result += vovels[r.Next(vovels.Length)];
+            }
+
+            result += consonants[r.Next(consonants.Length)];
+
+            return char.ToUpper(result[0]) + result.Substring(1);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -78,8 +115,9 @@ namespace WalkaChomika
         private void UpdatePlayer()
         {
             var player = App.Player;
+            me.DataContext = player;
 
-            meName.Text = player.Name;
+            //meName.Text = player.Name;
             meDamage.Text = $"Dmg: 0-{player.Damage}";
             meHP.Text = string.Format("HP: {0}", player.HP);
 
@@ -96,24 +134,20 @@ namespace WalkaChomika
         {
             txtLocationTitle.Text = currentLocation.Name;
             txtLocationNeswdu.Text = $"Kierunki: {NeswduHelper.ToNaturalLanguage(currentLocation.Neswdu)}";
-            txtLocationDescription.Text = currentLocation.Description;            
+            txtLocationDescription.Text = currentLocation.Description;
 
             lbLocationEnemies.ItemsSource = currentLocation.Enemies;
         }
 
-        private void GoNorth(object sender, RoutedEventArgs e)
+        private void OnClick(object sender, RoutedEventArgs e)
         {
-            Go(Neswdu.North);
-        }
-
-        private void GoEast(object sender, RoutedEventArgs e)
-        {
-            Go(Neswdu.East);
-        }
-
-        private void GoWest(object sender, RoutedEventArgs e)
-        {
-            Go(Neswdu.West);
+            switch (((Button)sender).Content.ToString())
+            {
+                case "East": Go(Neswdu.East); break;
+                case "West": Go(Neswdu.West); break;
+                case "North": Go(Neswdu.North); break;
+                case "South": Go(Neswdu.South); break;
+            }
         }
 
         /// <summary>
@@ -124,7 +158,7 @@ namespace WalkaChomika
         /// Kierunek, w którym gracz chce się udać
         /// </param>
         private void Go(Neswdu course)
-        {       
+        {
             if (NeswduHelper.CanIGo(currentLocation.HiddenNeswdu, course))
             {
                 try
@@ -143,11 +177,6 @@ namespace WalkaChomika
             {
                 txtLog.AddToBeginning("Nie możesz tam pójść!");
             }
-        }
-
-        private void GoSouth(object sender, RoutedEventArgs e)
-        {
-            Go(Neswdu.South);
         }
 
         private void lbLocationEnemies_SelectionChanged(object sender, SelectionChangedEventArgs e)
