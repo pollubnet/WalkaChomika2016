@@ -56,7 +56,9 @@ namespace WalkaChomika
             }
             catch (NullReferenceException ex)
             {
-                var m = new MessageDialog("Nie da się załadować tej krainy bo nie i już!" + ex.Message);
+                var m = new MessageDialog(
+                    "Nie da się załadować tej krainy bo nie i już!" + ex.Message
+                );
                 m.ShowAsync();
             }
             catch (Exception ex)
@@ -66,13 +68,10 @@ namespace WalkaChomika
             }
 
             btnChangeName.Click += BtnChangeName_Click;
-            btnChangeName.Click += (s, e) => { App.Player.Name = App.Player.Name + "!"; };
-
-            DispatcherTimer dt = new DispatcherTimer();
-            dt.Interval = TimeSpan.FromSeconds(1);
-            dt.Tick += (s, e) => { BtnChangeName_Click(null, null); };
-
-            dt.Start();
+            btnChangeName.Click += (s, e) =>
+            {
+                App.Player.Name = App.Player.Name + "!";
+            };
         }
 
         private void BtnChangeName_Click(object sender, RoutedEventArgs e)
@@ -133,7 +132,8 @@ namespace WalkaChomika
         private void UpdateLocation()
         {
             txtLocationTitle.Text = currentLocation.Name;
-            txtLocationNeswdu.Text = $"Kierunki: {NeswduHelper.ToNaturalLanguage(currentLocation.Neswdu)}";
+            txtLocationNeswdu.Text =
+                $"Kierunki: {NeswduHelper.ToNaturalLanguage(currentLocation.Neswdu)}";
             txtLocationDescription.Text = currentLocation.Description;
 
             lbLocationEnemies.ItemsSource = currentLocation.Enemies;
@@ -143,10 +143,18 @@ namespace WalkaChomika
         {
             switch (((Button)sender).Content.ToString())
             {
-                case "East": Go(Neswdu.East); break;
-                case "West": Go(Neswdu.West); break;
-                case "North": Go(Neswdu.North); break;
-                case "South": Go(Neswdu.South); break;
+                case "East":
+                    Go(Neswdu.East);
+                    break;
+                case "West":
+                    Go(Neswdu.West);
+                    break;
+                case "North":
+                    Go(Neswdu.North);
+                    break;
+                case "South":
+                    Go(Neswdu.South);
+                    break;
             }
         }
 
@@ -163,7 +171,9 @@ namespace WalkaChomika
             {
                 try
                 {
-                    currentLocation = currentArea.GetLocation(NeswduHelper.ToRelativePoint3(currentLocation.Coordinates, course));
+                    currentLocation = currentArea.GetLocation(
+                        NeswduHelper.ToRelativePoint3(currentLocation.Coordinates, course)
+                    );
                     UpdateLocation();
                     txtLog.AddToBeginning($"Poszedłeś na {NeswduHelper.ToNaturalLanguage(course)}");
                 }
